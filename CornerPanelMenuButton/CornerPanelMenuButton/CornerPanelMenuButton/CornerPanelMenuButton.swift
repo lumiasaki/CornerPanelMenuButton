@@ -135,7 +135,7 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
     
     // MARK: PanelMenu
     
-    lazy var panelSettings: PanelMenuSettings = .defaultSettings
+    lazy var panelSettings: PanelMenuSettings = PanelMenuSettings.defaultSettings(in: UIScreen.main.bounds.size)
     
     // MARK: FocusBezierPathDrawable
     

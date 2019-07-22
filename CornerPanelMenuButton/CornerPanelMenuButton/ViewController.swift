@@ -39,6 +39,11 @@ class ViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         cornerPanelMenuButton.customFocusedBezierPath = UIBezierPath(arcCenter: cornerPanelMenuButton.center, radius: cornerPanelMenuButton.bounds.width / 2, startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        cornerPanelMenuButton.panelSettings = PanelMenuSettings.defaultSettings(in: size)
+    }
 
 }
 

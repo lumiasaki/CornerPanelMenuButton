@@ -10,6 +10,7 @@ import UIKit
 import Foundation
 
 struct PanelMenuSettings {
+    
     enum CornerEnum: String {
         case topLeft
         case topRight
@@ -18,11 +19,12 @@ struct PanelMenuSettings {
     }
     
     struct CircleSettings {
-        var center: CGPoint
+        fileprivate(set) var center: CGPoint
+        fileprivate var containerSize: CGSize
         var radius: CGFloat
         var color: UIColor
         
-        init(corner: CornerEnum, color: UIColor) {
+        init(containerSize: CGSize, corner: CornerEnum, color: UIColor) {
             var x: CGFloat = 0
             var y: CGFloat = 0
             
@@ -31,18 +33,19 @@ struct PanelMenuSettings {
                 x = 0
                 y = 0
             case .topRight:
-                x = UIScreen.main.bounds.width
+                x = containerSize.width
                 y = 0
             case .bottomLeft:
                 x = 0
-                y = UIScreen.main.bounds.height
+                y = containerSize.height
             case .bottomRight:
-                x = UIScreen.main.bounds.width
-                y = UIScreen.main.bounds.height
+                x = containerSize.width
+                y = containerSize.height
             }
             
             self.center = CGPoint(x: x, y: y)
-            self.radius = min(UIScreen.main.bounds.height, UIScreen.main.bounds.width)
+            self.containerSize = containerSize
+            self.radius = min(containerSize.height, containerSize.width)
             self.color = color
         }
     }
@@ -60,25 +63,7 @@ struct PanelMenuSettings {
     
     var cornerSettings: CornerEnum {
         willSet {
-            var x: CGFloat = 0
-            var y: CGFloat = 0
-            
-            switch newValue {
-            case .topLeft:
-                x = 0
-                y = 0
-            case .topRight:
-                x = UIScreen.main.bounds.width
-                y = 0
-            case .bottomLeft:
-                x = 0
-                y = UIScreen.main.bounds.height
-            case .bottomRight:
-                x = UIScreen.main.bounds.width
-                y = UIScreen.main.bounds.height
-            }
-            
-            self.circleSettings.center = CGPoint(x: x, y: y)
+            self.circleSettings = CircleSettings(containerSize: self.circleSettings.containerSize, corner: newValue, color: self.circleSettings.color)
         }
     }
     var circleSettings: CircleSettings
@@ -87,14 +72,14 @@ struct PanelMenuSettings {
 }
 
 extension PanelMenuSettings {
-    static let defaultSettings = { () -> PanelMenuSettings in
+    static func defaultSettings(in size: CGSize) -> PanelMenuSettings {
         let cornerSettings: CornerEnum = .topRight
-        let circleSettings: CircleSettings = CircleSettings(corner: cornerSettings, color: .lightGray)
+        let circleSettings: CircleSettings = CircleSettings(containerSize: size, corner: cornerSettings, color: .lightGray)
         let dimSettings: DimSettings = DimSettings(enable: true, color: UIColor(white: 0, alpha: 0.5), duration: 0.14)
         let titleSettings: TitleSettings = TitleSettings(font: UIFont.systemFont(ofSize: 26), color: .white)
         
         return PanelMenuSettings(cornerSettings: cornerSettings, circleSettings: circleSettings, dimSettings: dimSettings, titleSettings: titleSettings)
-    }()
+    }
 }
 
 protocol PanelMenu: MenuAbility, Dimmable, FocusBezierPathDrawable {
