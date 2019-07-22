@@ -309,7 +309,7 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
                 case .topLeft, .topRight:
                     return point.y
                 case .bottomLeft, .bottomRight:
-                    return UIScreen.main.bounds.height - point.y
+                    return panelSettings.circleSettings.containerSize.height - point.y
                 }
             }()
             
@@ -318,7 +318,7 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
                 case .topLeft, .bottomLeft:
                     return point.x
                 case .topRight, .bottomRight:
-                    return UIScreen.main.bounds.width - point.x
+                    return panelSettings.circleSettings.containerSize.width - point.x
                 }
             }()
             
@@ -395,11 +395,11 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
             var y: CGFloat = abs((2 * panelSettings.circleSettings.radius / 3) * sin(targetAngle))
             
             if shouldBeMinusedByWidth {
-                x = UIScreen.main.bounds.width - x
+                x = panelSettings.circleSettings.containerSize.width - x
             }
             
             if shouldBeMinusedByHeight {
-                y = UIScreen.main.bounds.height - y
+                y = panelSettings.circleSettings.containerSize.height - y
             }
             
             return CGPoint(x: x, y: y)

@@ -20,7 +20,7 @@ struct PanelMenuSettings {
     
     struct CircleSettings {
         fileprivate(set) var center: CGPoint
-        fileprivate var containerSize: CGSize
+        fileprivate(set) var containerSize: CGSize
         var radius: CGFloat
         var color: UIColor
         
