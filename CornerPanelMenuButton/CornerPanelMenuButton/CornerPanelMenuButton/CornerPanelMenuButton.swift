@@ -137,6 +137,20 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
     
     lazy var panelSettings: PanelMenuSettings = .defaultSettings
     
+    // MARK: FocusBezierPathDrawable
+    
+    func focusedBezierPath() -> UIBezierPath? {
+        if let focusedBezierPath: UIBezierPath = customFocusedBezierPath {
+            return focusedBezierPath
+        }
+        
+        if let originInWindow: CGPoint = self.superview?.convert(self.frame.origin, to: nil) {
+            return UIBezierPath(rect: CGRect(origin: originInWindow, size: self.bounds.size))
+        }
+        
+        return nil
+    }
+    
     // MARK: Override UITouch Methods
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -149,6 +163,14 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
         
         if let touch: UITouch = touches.first, touch.previousLocation(in: nil) != touch.location(in: nil) {
             itemOn(point: touch.location(in: nil)) { (index, menuItem) in
+                guard let index = index, let menuItem = menuItem else {
+                    for (_, menuItemInfo) in internalMenuItemDrawingInfos.enumerated() {
+                        menuItemInfo.layer.fillColor = panelSettings.circleSettings.color.cgColor
+                    }
+                    
+                    return
+                }
+                
                 for (menuItemInfoIndex, menuItemInfo) in internalMenuItemDrawingInfos.enumerated() {
                     menuItemInfo.layer.fillColor = menuItemInfoIndex != index ? panelSettings.circleSettings.color.cgColor : menuItem.backgroundColor.cgColor
                 }
@@ -173,6 +195,12 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
         
         if let point = point {
             itemOn(point: point) { (index, menuItem) in
+                guard let index = index, let menuItem = menuItem else {
+                    cancellationBlock?()
+                    
+                    return
+                }
+                
                 selectionBlock?(index, menuItem)
             }
             
@@ -266,7 +294,7 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
         }
     }
     
-    private func itemOn(point: CGPoint, completionHandler: ((Int, MenuItem) -> ())) {
+    private func itemOn(point: CGPoint, completionHandler: ((Int?, MenuItem?) -> ())) {
         func itemInfoOn(point: CGPoint) -> (Int, MenuItem)? {
             guard let menuItems = menuItems, internalMenuItemDrawingInfos.count != 0 else {
                 return nil
@@ -292,6 +320,10 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
             
             let c: CGFloat = sqrt(a * a + b * b)
             
+            if c > panelSettings.circleSettings.radius {
+                return nil
+            }
+            
             let angle: CGFloat = acos(((a * a) + ( c * c ) - ( b * b )) / (( 2 * a * c)))
             
             for (index, menuItemInfo) in internalMenuItemDrawingInfos.enumerated() {
@@ -316,6 +348,7 @@ class CornerPanelMenuButton: UIButton, PanelMenu {
         }
         
         guard let (index, menuItem) = itemInfoOn(point: point) else {
+            completionHandler(nil, nil)
             return
         }
         

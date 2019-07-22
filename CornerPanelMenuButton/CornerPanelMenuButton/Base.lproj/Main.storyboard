@@ -32,6 +32,9 @@
                                     <userDefinedRuntimeAttribute type="color" keyPath="panelColor">
                                         <color key="value" red="1" green="0.63093201286245937" blue="0.6212040053270288" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                     </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="26"/>
+                                    </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </button>
                         </subviews>

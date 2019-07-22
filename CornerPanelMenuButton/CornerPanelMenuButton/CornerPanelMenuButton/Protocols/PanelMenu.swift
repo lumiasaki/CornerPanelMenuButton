@@ -103,6 +103,7 @@ protocol PanelMenu: MenuAbility, Dimmable, FocusBezierPathDrawable {
 
 private struct AssociatedObjectKey {
     static var highlightedBlockKey: Void?
+    static var customFocusedBezierPath: Void?
 }
 
 extension PanelMenu {
@@ -113,6 +114,16 @@ extension PanelMenu {
         
         set {
             objc_setAssociatedObject(self, &AssociatedObjectKey.highlightedBlockKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    var customFocusedBezierPath: UIBezierPath? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedObjectKey.customFocusedBezierPath) as? UIBezierPath
+        }
+        
+        set {
+            objc_setAssociatedObject(self, &AssociatedObjectKey.customFocusedBezierPath, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
